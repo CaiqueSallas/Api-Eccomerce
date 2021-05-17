@@ -32,11 +32,14 @@ class ProductService
         return $model;
     }
 
-    public function verifyStock($id, $quantity){
-        $product = $this->product->find($id);
+    public function verifyStock(array $products){
+        foreach($products as $product)
+        {
+            $model = $this->product->find($product['product_id']);
 
-        if($product->quantity < $quantity){
-            throw new NotFoundHttpException('Produto fora de estoque: '.$product->name);
+            if($model->quantity < $product['quantity']){
+                throw new NotFoundHttpException('Produto fora de estoque: ' . $model->name);
+            }
         }
 
         return $product;

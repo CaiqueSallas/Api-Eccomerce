@@ -46,7 +46,13 @@ Class OrderController extends Controller {
 
     public function delete($id)
     {
+        $order = $this->serviceInstance->delete($id);
 
+        return response()->json([
+            'error'     => false,
+            'message'   => 'Pedido cancelado com sucesso',
+            'data'      => $order
+        ]);
     }
 
     public function create()
@@ -61,9 +67,9 @@ Class OrderController extends Controller {
 
         $products = $this->request->products;
 
-        foreach($products as &$product) {
-            $this->productService->verifyStock($product['product_id'], $product['quantity']);
+        $this->productService->verifyStock($products);
 
+        foreach($products as &$product) {
             $productModel = Product::find($product['product_id']);
             $product['value'] = $productModel->value * $product['quantity'];
 
@@ -87,15 +93,12 @@ Class OrderController extends Controller {
 
         $payment = $this->paymentService->create([
             'order_id'  => $order->id,
-            'status_id' => 1,
+            'status_id' => 2,
             'method'    => $this->request->payment['method'],
             'value'     => $total,
         ]);
 
-        $data = $order
-                    ->with('payment')
-                    ->with('orderProduct')
-                    ->with('user');
+        $data = $this->serviceInstance->get($order->user_id);
 
         return response()->json([
             'error'     => false,

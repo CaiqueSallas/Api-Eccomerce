@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::group(['prefix' => 'order'], function() {
         Route::post('/', [OrderController::class, 'create']);
         Route::get('{id}', [OrderController::class, 'getByUser']);
+        Route::delete('{id}', [OrderController::class, 'delete']);
     });
 
     Route::group(['prefix'  => 'orderproduct'], function() {
