@@ -1,0 +1,5 @@
+FROM postgres:13-alpine
+LABEL maintainer "Caique Sallas <caique.sallas2002@hotmail.com>"
+ENV POSTGRES_USER=root
+ENV POSTGRES_PASSWORD=root
+ENV POSTGRES_DB=eccomerce
