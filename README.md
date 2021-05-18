@@ -23,4 +23,24 @@ Eccomerce Api Build in Laravel
 <h3> Postman Documentation: </h3>
 <h4> to see the postman documentation, click in import on the top left of the postman and past the link below: </h4>
 <h4>https://www.getpostman.com/collections/6e542feb94bdc994f18e</h4>
+<h4> Ciclk on the icon in the right of the eye on the top right of postman and import a json file with these informations: </h4>
+{
+	"id": "df23171b-ffc7-46be-9b3a-d659a6483935",
+	"name": "Local",
+	"values": [
+		{
+			"key": "api-domain",
+			"value": "localhost:8100/api",
+			"enabled": true
+		},
+		{
+			"key": "token",
+			"value": "Bearer 2|J8jAikduCbogAgarpxFzDorH3x80LD4MUFEBXnJp",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-05-18T21:27:59.877Z",
+	"_postman_exported_using": "Postman/7.36.5"
+}
 <h4> To make requests you have to take a token on User Login and put on the Token variable by clicking on the eye on the right top of postman (Remember to put a "Bearer" before the token key)</h4>
