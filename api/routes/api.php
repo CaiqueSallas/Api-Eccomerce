@@ -39,7 +39,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     });
 
     Route::group(['prefix' => 'product'], function () {
-        Route::get('/', [ProductController::class, 'get']);
+        Route::get('/{filter?}{order?}{id?}', [ProductController::class, 'get']);
         Route::post('/', [ProductController::class, 'create']);
         Route::patch('/', [ProductController::class, 'setStock']);
         Route::delete('/{id}', [ProductController::class, 'delete']);
@@ -52,13 +52,15 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
     Route::group(['prefix' => 'order'], function() {
         Route::post('/', [OrderController::class, 'create']);
-        Route::get('{id}', [OrderController::class, 'getByUser']);
+        Route::get('{userId?}', [OrderController::class, 'get']);
         Route::delete('{id}', [OrderController::class, 'delete']);
     });
 
     Route::group(['prefix'  => 'orderproduct'], function() {
         Route::get('/', [OrderProductController::class, 'get']);
     });
+
+    Route::patch('/payment', [PaymentController::class, 'update']);
 });
 
 

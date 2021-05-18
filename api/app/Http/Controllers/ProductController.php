@@ -31,14 +31,15 @@ class ProductController extends BaseController
     {
         $validator = Validator::make($this->request->all(), [
             'filter'        =>      'string|nullable',
-            'order'         =>      'string|nullable'
+            'order'         =>      'string|nullable',
+            'id'            =>      'numeric|nullable'
         ]);
 
         if($validator->fails()) {
             return response()->json(['error' => true, 'data' => $validator->errors()], 422);
         }
 
-        $data = $this->serviceInstance->get($this->request->only('filter', 'order'));
+        $data = $this->serviceInstance->get($this->request->only('filter', 'order', 'id'));
 
         return response()->json([
             'error'     => false,

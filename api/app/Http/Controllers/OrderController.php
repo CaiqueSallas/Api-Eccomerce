@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Services\OrderProductService;
 use App\Http\Services\OrderService;
 use App\Http\Services\PaymentService;
 use App\Http\Services\ProductService;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -34,7 +34,7 @@ Class OrderController extends Controller {
         $this->orderProductService = $orderProductService;
     }
 
-    public function getByUser($userId)
+    public function get($userId = null)
     {
         $data = $this->serviceInstance->get($userId);
 
@@ -63,11 +63,11 @@ Class OrderController extends Controller {
             return response()->json(['error' => true, 'data' => $validator->errors()], 422);
         }
 
-        $order = $this->serviceInstance->create(auth()->user()->id);
-
-        $products = $this->request->products;
+        $products = $this->request->input('products');
 
         $this->productService->verifyStock($products);
+
+        $order = $this->serviceInstance->create(auth()->user()->id);
 
         foreach($products as &$product) {
             $productModel = Product::find($product['product_id']);
@@ -91,14 +91,14 @@ Class OrderController extends Controller {
 
         $total = $products->sum('value');
 
-        $payment = $this->paymentService->create([
+        $this->paymentService->create([
             'order_id'  => $order->id,
             'status_id' => 2,
             'method'    => $this->request->payment['method'],
             'value'     => $total,
         ]);
 
-        $data = $this->serviceInstance->get($order->user_id);
+        $data = $order;
 
         return response()->json([
             'error'     => false,

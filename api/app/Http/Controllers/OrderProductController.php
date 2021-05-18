@@ -15,6 +15,11 @@ class OrderProductController extends Controller
 
     public function get()
     {
-        return OrderProduct::all();
+        $data = $this->serviceInstance->get();
+
+        return response()->json([
+            'error' => false,
+            'data'  => $data
+        ]);
     }
 }

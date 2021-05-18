@@ -19,6 +19,10 @@ class ProductService
     {
         $model = $this->product;
 
+        if (isset($params['id'])) {
+            $model = $model->where('id', $params['id']);
+        }
+
         if (isset($params['filter'])) {
             $model = $model->where('name', 'ilike', '%' . $params['filter'] . '%');
         }
@@ -60,6 +64,11 @@ class ProductService
     public function setStock(array $params)
     {
         $model = $this->product->find($params['id']);
+
+        if (!isset($model))
+        {
+            throw new NotFoundHttpException('Produto não encontrado');
+        }
 
         $model->quantity = $params['quantity'];
 

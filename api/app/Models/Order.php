@@ -15,11 +15,11 @@ class Order extends Model
     protected $fillable = [
         'id',
         'user_id',
-        'created_at',
         'status'
     ];
 
     protected $hidden = [
+        'created_at',
         'deleted_at',
         'updated_at'
     ];

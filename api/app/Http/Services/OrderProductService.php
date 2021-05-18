@@ -13,10 +13,18 @@ class OrderProductService
         $this->orderProduct = $orderProduct;
     }
 
-    public function create(array $params){
+    public function create(array $params)
+    {
         $orderProduct = $this->orderProduct->create($params);
 
         return $orderProduct;
+    }
+
+    public function get()
+    {
+        $model = $this->orderProduct->with('product')->get();
+
+        return $model;
     }
 
 

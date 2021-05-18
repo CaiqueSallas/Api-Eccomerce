@@ -17,11 +17,11 @@ class Payment extends Model
         'order_id',
         'method',
         'value',
-        'status_id',
-        'created_at'
+        'status_id'
     ];
 
     protected $hidden = [
+        'created_at',
         'deleted_at',
         'updated_at'
     ];
@@ -31,7 +31,7 @@ class Payment extends Model
     ];
 
     public function order() {
-        return $this->belongsTo(Request::class, 'request_id', 'id');
+        return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
     public function status(){
