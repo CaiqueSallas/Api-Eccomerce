@@ -7,17 +7,55 @@ use App\Models\Product;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class OrderService
 {
-    public function __construct(Order $order, ProductService $product)
+    public function __construct(
+        Order $order,
+        ProductService $product,
+        OrderProductService $orderProductService,
+        PaymentService $paymentService
+        )
     {
         $this->modelInstance = $order;
         $this->product = $product;
+        $this->orderProductService = $orderProductService;
+        $this->paymentService = $paymentService;
     }
 
-    public function create($user_id)
+    public function create($userId, $products, $payment)
     {
-        $model = $this->modelInstance->create(['user_id' => $user_id, 'status' => 'Aguardando pagamento']);
+        $this->product->verifyStock($products);
 
-        return $model;
+        $order = $this->modelInstance->create(['user_id' => $userId, 'status' => 'Aguardando pagamento']);
+
+        foreach($products as &$product) {
+            $productModel = Product::find($product['product_id']);
+            $product['value'] = $productModel->value * $product['quantity'];
+
+            $this->orderProductService->create([
+                'quantity'      => $product['quantity'],
+                'order_id'      => $order->id,
+                'product_id'    => $product['product_id']
+            ]);
+
+            $stock = $productModel->quantity - $product['quantity'];
+
+            $this->product->setStock([
+                'id'        => $productModel->id,
+                'quantity'  => $stock
+            ]);
+        }
+
+        $products = collect($products);
+
+        $total = $products->sum('value');
+
+        $this->paymentService->create([
+            'order_id'  => $order->id,
+            'status_id' => 2,
+            'method'    => $payment['method'],
+            'value'     => $total,
+        ]);
+
+        return $order;
     }
 
     public function get($userId = null)

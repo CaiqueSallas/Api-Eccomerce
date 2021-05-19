@@ -17,17 +17,32 @@ class ProductTableSeeder extends Seeder
     {
         $seeders = [
             [
-                'name'          => 'Pc Gamer',
+                'name'          => 'Pc',
                 'quantity'      => 10,
                 'value'         => 99.99,
             ],
             [
-                'name'          => 'Teclado Gamer',
+                'name'          => 'Teclado',
                 'quantity'      => 10,
                 'value'         => 9.99
             ],
             [
                 'name'          => 'Mouse',
+                'quantity'      => 10,
+                'value'         => 19.99
+            ],
+            [
+                'name'          => 'Monitor',
+                'quantity'      => 10,
+                'value'         => 1999.99
+            ],
+            [
+                'name'          => 'Fonte',
+                'quantity'      => 10,
+                'value'         => 199.99
+            ],
+            [
+                'name'          => 'Mouse Pad',
                 'quantity'      => 10,
                 'value'         => 19.99
             ],

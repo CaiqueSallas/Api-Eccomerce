@@ -65,40 +65,9 @@ Class OrderController extends Controller {
 
         $products = $this->request->input('products');
 
-        $this->productService->verifyStock($products);
+        $payment = $this->request->input('payment');
 
-        $order = $this->serviceInstance->create(auth()->user()->id);
-
-        foreach($products as &$product) {
-            $productModel = Product::find($product['product_id']);
-            $product['value'] = $productModel->value * $product['quantity'];
-
-            $this->orderProductService->create([
-                'quantity'      => $product['quantity'],
-                'order_id'      => $order->id,
-                'product_id'    => $product['product_id']
-            ]);
-
-            $stock = $productModel->quantity - $product['quantity'];
-
-            $this->productService->setStock([
-                'id'        => $productModel->id,
-                'quantity'  => $stock
-            ]);
-        }
-
-        $products = collect($products);
-
-        $total = $products->sum('value');
-
-        $this->paymentService->create([
-            'order_id'  => $order->id,
-            'status_id' => 2,
-            'method'    => $this->request->payment['method'],
-            'value'     => $total,
-        ]);
-
-        $data = $order;
+        $data = $this->serviceInstance->create(auth()->user()->id, $products, $payment);
 
         return response()->json([
             'error'     => false,

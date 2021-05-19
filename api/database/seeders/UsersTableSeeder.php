@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
     {
         $seeders = [
             [
-                'name' => 'gabriel',
+                'name' => 'Gabriel',
                 'email' => 'gabriel@email.com',
                 'password' => 'gabriel1234'
             ],
@@ -27,9 +27,9 @@ class UsersTableSeeder extends Seeder
                 'password' => 'renan1234'
             ],
             [
-                'name' => 'caique',
-                'email' => 'caique@email.com',
-                'password' => '1234'
+                'name' => 'Lucas',
+                'email' => 'lucas@email.com',
+                'password' => 'lucas1234'
             ],
         ];
         foreach($seeders as $seed){
