@@ -2,43 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\BaseController;
 use App\Http\Services\PaymentService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\JsonResponse;
 
-class PaymentController extends Controller
+class PaymentController extends BaseController
 {
     public function __construct(PaymentService $payment)
     {
-        $this->payment = $payment;
+        $this->serviceInstance = $payment;
     }
 
-    public function get()
+    public function update(int $id): JsonResponse
     {
-        $payment = $this->payment->get();
-
-        return response()->Json([
-            'error'     => false,
-            'data'      => $payment
-        ]);
-    }
-
-    public function update(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'payment_id'        => 'required|numeric'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => true, 'data' => $validator->errors()], 422);
-        }
-
-        $data = $this->payment->update($request->input('payment_id'));
+        $collection = $this->serviceInstance->update($id);
 
         return response()->json([
             'error'     => false,
             'message'   => 'Pagamento efetuado com sucesso!',
-            'data'      => $data
-        ]);
+            'data'      => $collection
+        ], 200);
     }
 }

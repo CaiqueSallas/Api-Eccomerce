@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\ProductService;
-use App\Models\Product;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,13 +20,13 @@ class ProductController extends BaseController
         'quantity'  => 'required|numeric'
     ];
 
-    public function __construct(ProductService $serviceInstance, Request $request)
+    public function __construct(ProductService $productService, Request $request)
     {
-        $this->serviceInstance = $serviceInstance;
+        $this->serviceInstance = $productService;
         $this->request = $request;
     }
 
-    public function get()
+    public function get(): JsonResponse
     {
         $validator = Validator::make($this->request->all(), [
             'filter'        =>      'string|nullable',
@@ -44,27 +43,10 @@ class ProductController extends BaseController
         return response()->json([
             'error'     => false,
             'data'      => $data,
-        ]);
+        ], 200);
     }
 
-    public function create()
-    {
-        $validator = Validator::make($this->request->all(), $this->createRules);
-
-        if ($validator->fails()) {
-            return response()->json(['error' => true, 'data' => $validator->errors()], 422);
-        }
-
-        $data = $this->serviceInstance->create($this->request->only('name', 'value', 'quantity'));
-
-        return response()->json([
-            'error'     => false,
-            'message'   => 'Produto criado com sucesso',
-            'data'      => $data
-        ]);
-    }
-
-    public function setStock()
+    public function setStock(): JsonResponse
     {
         $validator = Validator::make($this->request->all(), [
             'id'        =>  'required|numeric',
@@ -81,6 +63,6 @@ class ProductController extends BaseController
             'error'     =>  false,
             'message'   =>  'Estoque modificado com sucesso',
             'data'      =>  $data
-        ]);
+        ], 200);
     }
 }

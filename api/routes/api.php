@@ -29,13 +29,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
 
-Route::get('/test', function() {
-    return auth()->user();
-})->middleware('auth:sanctum');
-
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::group(['prefix' => 'payment'], function () {
         Route::get('/', [PaymentController::class, 'get']);
+        Route::patch('{id}', [PaymentController::class, 'update']);
     });
 
     Route::group(['prefix' => 'product'], function () {
@@ -59,8 +56,6 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::group(['prefix'  => 'orderproduct'], function() {
         Route::get('/', [OrderProductController::class, 'get']);
     });
-
-    Route::patch('/payment', [PaymentController::class, 'update']);
 });
 
 

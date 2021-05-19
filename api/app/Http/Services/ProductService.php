@@ -3,21 +3,20 @@
 namespace App\Http\Services;
 
 use App\Models\Product;
-use App\Models\Stock;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Database\Eloquent\Collection;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class ProductService
+class ProductService extends BaseService
 {
     public function __construct(Product $product)
     {
-        $this->product = $product;
+        $this->modelInstance = $product;
     }
 
-    public function get(array $params)
+    public function get(array $params = null): Collection
     {
-        $model = $this->product;
+        $model = $this->modelInstance;
 
         if (isset($params['id'])) {
             $model = $model->where('id', $params['id']);
@@ -31,15 +30,16 @@ class ProductService
             $model = $model->orderBy($params['order'], 'desc');
         }
 
-        $model = $model->get();
+        $collection = $model->get();
 
-        return $model;
+        return $collection;
     }
 
-    public function verifyStock(array $products){
+    public function verifyStock(array $products)
+    {
         foreach($products as $product)
         {
-            $model = $this->product->find($product['product_id']);
+            $model = $this->modelInstance->find($product['product_id']);
 
             if($model->quantity < $product['quantity']){
                 throw new NotFoundHttpException('Produto fora de estoque: ' . $model->name);
@@ -47,23 +47,11 @@ class ProductService
         }
 
         return $product;
-
-    }
-
-    public function create(array $params)
-    {
-        $model = $this->product->create([
-            'name'      =>  $params['name'],
-            'value'     =>  $params['value'],
-            'quantity'  =>  $params['quantity']
-        ]);
-
-        return $model;
     }
 
     public function setStock(array $params)
     {
-        $model = $this->product->find($params['id']);
+        $model = $this->modelInstance->find($params['id']);
 
         if (!isset($model))
         {
@@ -75,5 +63,24 @@ class ProductService
         $model->save();
 
         return $model;
+    }
+
+    public function delete($id)
+    {
+        $model = $this->modelInstance->find($id);
+
+        if (!isset($model))
+        {
+            throw new NotFoundHttpException('Produto não encontrado');
+        }
+
+        $relation = $model->orderProduct->first();
+
+        if (isset($relation))
+        {
+            throw new ConflictHttpException('Produto atualmente requisitado em pelo menos um pedido');
+        }
+
+        return $model->delete();
     }
 }

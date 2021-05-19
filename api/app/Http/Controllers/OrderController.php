@@ -8,10 +8,11 @@ use App\Http\Services\PaymentService;
 use App\Http\Services\ProductService;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-Class OrderController extends Controller {
+Class OrderController extends BaseController {
 
     protected $createRules = [
         'payment.method'        => 'required|string',
@@ -34,28 +35,17 @@ Class OrderController extends Controller {
         $this->orderProductService = $orderProductService;
     }
 
-    public function get($userId = null)
+    public function get($userId = null): JsonResponse
     {
         $data = $this->serviceInstance->get($userId);
 
         return response()->json([
             'error' => false,
             'data'  => $data
-        ]);
+        ], 200);
     }
 
-    public function delete($id)
-    {
-        $order = $this->serviceInstance->delete($id);
-
-        return response()->json([
-            'error'     => false,
-            'message'   => 'Pedido cancelado com sucesso',
-            'data'      => $order
-        ]);
-    }
-
-    public function create()
+    public function create(): JsonResponse
     {
         $validator = Validator::make($this->request->all(), $this->createRules);
 
@@ -73,6 +63,6 @@ Class OrderController extends Controller {
             'error'     => false,
             'message'   => 'Pedido feito com sucesso, aguardando pagamento.',
             'data'      => $data
-        ]);
+        ], 200);
     }
 }
