@@ -1,6 +1,15 @@
 # Api-Eccomerce
 Eccomerce Api Build in Laravel
 
+The API meets the following requirements
+- User Authentication;
+- Product Search (with text filter);
+- Buying process with payment, item quantity and user validation;
+- Make an order;
+- Search orders by user;
+- Cancel order;
+- Update order status;
+
 <h1>How to execute</h1>
 
 <h3> requirements: </h3>
